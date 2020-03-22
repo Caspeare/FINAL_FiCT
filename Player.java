@@ -79,7 +79,9 @@ public class Player {
             this.currentHP = 3560;
             this.atk = 198;
             this.SP_level = 4;
+            this.SP_count = 4;
         }
+
     }
 
     /**
@@ -172,12 +174,14 @@ public class Player {
     {
         //INSERT YOUR CODE HERE
          if (this.type == PlayerType.Cherry) {
+             if (!teamAlive(theirTeam)) return;
 
-        //            SendToSleep(theirTeam);
-        //        else {
-                    System.out.println("WHAT THE FUCK");
+             //Print out this Player location
+             System.out.print(this.SendMeYourLocation(this));
+
                     for (int i = 0; i < theirTeam.length; i++) {
                         for (int j = 0; j < theirTeam[i].length; j++) {
+
                             if (theirTeam[i][j].isAlive() == true) {
                                 theirTeam[i][j].setSleep(true);
                                 System.out.print(" Feeds a Fortune Cookie to ");
@@ -189,6 +193,10 @@ public class Player {
                     }
                 }
         if (this.type == PlayerType.Healer) {
+
+            //Print out this Player location
+            System.out.print(this.SendMeYourLocation(this));
+
             Player target = getHealingTarget(myTeam);
             double heal = target.getMaxHP()*0.25;
             if (target.getCurrentHP()+heal > target.getMaxHP()) target.setCurrentHP(target.getMaxHP());
@@ -203,6 +211,12 @@ public class Player {
             return;
         }
         else if (this.type == PlayerType.Samurai) {
+            //check if other team still alive
+            if (!teamAlive(theirTeam)) return;
+
+            //Print out this Player location
+            System.out.print(this.SendMeYourLocation(this));
+
             Player target = getTarget(theirTeam);
             attack(target);
             attack(target);
@@ -212,6 +226,12 @@ public class Player {
 
         }
         else if (this.type == PlayerType.BlackMage) {
+            //check if other team still alive
+            if (!teamAlive(theirTeam)) return;
+
+            //Print out this Player location
+            System.out.print(this.SendMeYourLocation(this));
+
             Player target = getTarget(theirTeam);
             target.setCursed(true);
             System.out.print(" Curses ");
@@ -232,55 +252,6 @@ public class Player {
 
         }
 
-//        Player target;
-//        switch (this.getType()) {
-//
-//            case Healer:
-//                target = getHealingTarget(myTeam);
-//                double heal = target.getMaxHP()*0.25;
-//                if (target.getCurrentHP()+heal > target.getMaxHP()) target.setCurrentHP(target.getMaxHP());
-//                else target.setCurrentHP(target.getCurrentHP()+heal);
-//                System.out.print(" Heals ");
-//                System.out.println(SendMeYourLocation(target));
-//            case Tank:
-//                System.out.println(" is Taunting ");
-//                this.setTaunt(true);
-//            case Samurai:
-//                target = getTarget(theirTeam);
-//                attack(target);
-//                attack(target);
-//                System.out.print(" Double-Slashes ");
-//                System.out.println(SendMeYourLocation(target));
-//                return;
-//            case BlackMage:
-//                target = getTarget(theirTeam);
-//                target.setCursed(true);
-//                System.out.print(" Curses ");
-//                System.out.println(SendMeYourLocation(target));
-//                break;
-//            case Cherry:
-////                SendToSleep(theirTeam);
-//                for (int i = 0; i < theirTeam.length; i++) {
-//                for (int j = 0; j < theirTeam[i].length; j++) {
-//                    if (theirTeam[i][j].isAlive() == true) {
-//                        theirTeam[i][j].sleep = true;
-//                        System.out.print(" Feeds a Fortune Cookie to ");
-//                        System.out.println(SendMeYourLocation(theirTeam[i][j]));
-//                    }
-//                }
-//
-//
-//            }
-//            case Phoenix:
-//                if (anyDeath(myTeam)) {
-//                    target = getTargetRevive(myTeam);
-//                    double reviveHP = target.getMaxHP() * 0.3;
-//                    target.setCurrentHP(reviveHP);
-//                    System.out.print(" Revives ");
-//                    System.out.println(SendMeYourLocation(target));
-//                    break;
-//                }
-//        }
 
     }
 
@@ -307,12 +278,13 @@ public class Player {
             myTeam = arena.getTeam(Arena.Team.B);
             theirTeam = arena.getTeam(Arena.Team.A);
         }
-        //Check alive player in both team
-        if (((AnyStillAlive(myTeam, Arena.Row.Front) || AnyStillAlive(myTeam, Arena.Row.Back)) &&
-                (AnyStillAlive(theirTeam, Arena.Row.Front) || AnyStillAlive(theirTeam, Arena.Row.Back))) == false)  {
-            return;
-        }
 
+
+//        if (this.type == PlayerType.Tank)
+//        {
+//            System.out.println("Tank taunt = " + this.taunt);
+//            System.out.println("Tank SP = " + this.SP_count   );
+//        }
 
         /**Pre-Battle Removing Negative Effect Phase*/
         //Remove Taunt status
@@ -330,13 +302,14 @@ public class Player {
         //If Player sleep, don't do anything
         if (this.isSleeping() == true) return;
 
-        System.out.println();
 
-        
+
         /**Battling Phase*/
 //        if (arena.getNumRounds()%this.SP_level==0) {
         if (this.SP_count == 1) {
             //Use SpecialAbility
+
+
             useSpecialAbility(myTeam, theirTeam);
             resetSPcooldown();
 
@@ -345,10 +318,15 @@ public class Player {
             //Use Normal Attack
             if (anyTaunt(theirTeam)) {
                //attack 1st taunt
+
+                //check if other team still alive
+                if (!teamAlive(theirTeam)) return;
                 Player target = getTargetTaunt(theirTeam);
                 attack(target);
-                if (this.type == PlayerType.Cherry) {
-                    System.out.println("wTf"); }
+
+                //Print out this Player location
+                System.out.print(this.SendMeYourLocation(this));
+
                 System.out.print(" Attacks ");
                 System.out.println(SendMeYourLocation(target));
                 this.SP_count--;
@@ -356,10 +334,15 @@ public class Player {
             }
             else {
                 //attack 1st least HP
+
+                //check if other team still alive
+                if (!teamAlive(theirTeam)) return;
                 Player target = getTarget(theirTeam);
                 attack(target);
-                if (this.type == PlayerType.Cherry) {
-                    System.out.println("is HappEnInG"); }
+
+                //Print out this Player location
+                System.out.print(this.SendMeYourLocation(this));
+
                 System.out.print(" Attacks ");
                 System.out.println(SendMeYourLocation(target));
                 this.SP_count--;
@@ -367,6 +350,8 @@ public class Player {
             }
 
         }
+
+
 
     }
 
@@ -415,6 +400,18 @@ public class Player {
     public void setZeroHP(){ this.currentHP = 0;}
 
     public void resetSPcooldown() { this.SP_count = this.SP_level;}
+
+    /**
+     * this method check if other team still alive
+     */
+    public boolean teamAlive( Player[][] team)
+    {
+        //Check alive player in both team
+        if (AnyStillAlive(team, Arena.Row.Front) || AnyStillAlive(team, Arena.Row.Back)){
+            return true;
+        }
+        else return false;
+    }
 
     /**
      * This method get the percentage value of currentHP of the Player
@@ -602,25 +599,6 @@ public class Player {
     {
         return  player.team + "[" + player.row + "][" + player.position + "] {" + player.getType() + "}" ;
     }
-
-    /**
-     * This method set sleep for the Alive player
-     */
-    public void SendToSleep(Player[][] team)
-    {
-        for (int i = 0; i < team.length; i++) {
-            for (Player each : team[i]) {
-                if (each.isAlive()) {
-                    each.setSleep(true);
-                    System.out.print(" Feeds a Fortune Cookie to ");
-                    System.out.println(SendMeYourLocation(each));
-
-                }
-
-            }
-        }
-    }
-
 
 
 }

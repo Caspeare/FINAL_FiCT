@@ -125,16 +125,14 @@ public class Arena {
 
 		for (int i = 0; i < teamA.length; i++) {
 			for (Player each : teamA[i]) {
-				if (each.equals(null)) {
-					System.out.println("error");
+				if (each==null) {
 					return false;
 				}
 			}
 		}
 		for (int i = 0; i < teamB.length; i++) {
 			for (Player each : teamB[i]) {
-				if (each.equals(null)) {
-					System.out.println("error");
+				if (each==null) {
 					return false;
 				}
 			}
@@ -158,7 +156,6 @@ public class Arena {
 		//Check the number of each type
 		for (int i = 0; i < Amount_TeamA.length; i++) {
 			if (Amount_TeamA[i] > MAXEACHTYPE || Amount_TeamB[i] > MAXEACHTYPE) {
-				System.out.println("error");
 				return false;
 			}
 		}
@@ -196,6 +193,7 @@ public class Arena {
 	public Player[][] getWinningTeam()
 	{
 		//INSERT YOUR CODE HERE
+		System.out.print("@@@ ");
 		/**Determine winner by amount of Alive Player*/
 		if (NumberAlive(Team.A) == NumberAlive(Team.B)) {
 
@@ -244,9 +242,6 @@ public class Arena {
 	public void startBattle()
 	{
 		//INSERT YOUR CODE HERE
-		System.out.println("@ Welcome to Final FiCT. An automated fantasy battle simulation.\n" +
-				"@ Please join us to welcome both Arena.Team A and Arena.Team B.");
-		displayArea(this, true);
 		while (numRounds <= MAXROUNDS) {
 
 			System.out.println("@ round " + ++numRounds);
@@ -254,7 +249,6 @@ public class Arena {
 			for (int row = 0; row < teamA.length; row++) {
 				for (Player each : teamA[row]) {
 					if (each.isAlive() && !each.isSleeping()) {
-						System.out.print(each.SendMeYourLocation(each));
 						each.takeAction(this);
 					}
 				}
@@ -264,7 +258,6 @@ public class Arena {
 			for (int row = 0; row < teamB.length; row++) {
 				for (Player each : teamB[row]) {
 					if (each.isAlive() && !each.isSleeping()) {
-						System.out.print(each.SendMeYourLocation(each));
 						each.takeAction(this);
 					}
 				}
@@ -388,44 +381,6 @@ public class Arena {
 	}
 
 	/**
-	 * this method returns number of current round
-	 * @return
-	 */
-	public int getNumRounds() { return this.numRounds;}
-
-
-//	/**
-//	 * This method return the Player as a target to be attacked
-//	 * @param _enemyTeam
-//	 * @return
-//	 */
-//	public Player getTarget(Player[][] _enemyTeam)
-//	{
-//		if (AnyStillAlive(_enemyTeam, Row.Front)) {
-//			int row = 0;
-//			Player target = setDefaultTarget(_enemyTeam, Row.Front);
-//
-//			for (int i = _enemyTeam.length-1; i >= 0; i--) {
-//				if ( _enemyTeam[row][i].isAlive() && (target.getCurrentHP() <= _enemyTeam[row][i].getCurrentHP())) target = _enemyTeam[row][i];
-//			}
-//			return target;
-//		}
-//		if (AnyStillAlive(_enemyTeam, Row.Back))
-//		{
-//			int row = 1;
-//			Player target = setDefaultTarget(_enemyTeam, Row.Back);
-//
-//			for (int i = _enemyTeam.length-1; i >= 0; i--) {
-//				if ( _enemyTeam[row][i].isAlive() && (target.getCurrentHP() <= _enemyTeam[row][i].getCurrentHP())) target = _enemyTeam[row][i];
-//			}
-//			return target;
-//		}
-//
-//		return null;
-//
-//	}
-
-	/**
 	 * This method check whether any of Players in this row still alive or not
 	 * @param row
 	 * @param team
@@ -443,90 +398,6 @@ public class Arena {
 
 		return false;
 	}
-
-//	/**
-//	 * This method print the Current Player position
-//	 */
-//	public String toString_Player (Player player)
-//	{
-//		return  getTeamOf(player) + "[" + getRowOf(player)+ "][" + getPosition(player) + "] {" + player.getType() + "}" ;
-//
-//	}
-
-//	/**
-//	 * Set default target when selecting target
-//	 */
-//	public Player setDefaultTarget(Player[][] player, Row row)
-//	{
-//		Player target = null;
-//		int i;
-//		if (row == Row.Front) i = 0;
-//		else i = 1;
-//		for (int j = 0; j < player[i].length; j++ ) {
-//			if (player[i][j].isAlive()) target = player[i][j];
-//		}
-//
-//		return target;
-//	}
-
-//	/**
-//	 * this method return team of the Player
-//	 * @param player
-//	 * @return
-//	 */
-//	public Team getTeamOf(Player player)
-//	{
-//		if (isMemberOf(player, Team.A)) return Team.A;
-//		else return Team.B;
-//
-//	}
-//
-//	/**
-//	 * this method return the row of the Player
-//	 * @param player
-//	 * @return
-//	 */
-//	public Row getRowOf(Player player)
-//	{
-//		Player[][] team;
-//		Row OfRow = null;
-//		if (isMemberOf(player, Team.A)) team = teamA;
-//		else team = teamB;
-//
-//		for (int row = 0; row < team.length; row++) {
-//			for (Player each : team[row]) {
-//				if (each == player) {
-//					if (row == 0) OfRow = Row.Front;
-//					else OfRow = Row.Back;
-//				}
-//			}
-//		}
-//
-//		return OfRow;
-//	}
-//
-//	/**
-//	 * this method return of Player position in the team in the specified row
-//	 * @param player
-//	 * @return
-//	 */
-//	public int getPosition(Player player) {
-//		Player[][] team;
-//		int position = 0;
-//		if (isMemberOf(player, Team.A)) team = teamA;
-//		else team = teamB;
-//
-//		for (int row = 0; row < team.length; row++) {
-//			for (int i = 0; i < team[row].length; i++) {
-//				if (team[row][i] == player) position = i;
-//			}
-//		}
-//
-//		return position;
-//	}
-
-
-
 
 
 }
